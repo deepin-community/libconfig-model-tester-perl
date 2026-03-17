@@ -1,3 +1,29 @@
+libconfig-model-tester-perl (4.008-2) unstable; urgency=medium
+
+  * add patch to remove perl critic tests (which fixes FTBS)
+
+ -- Dominique Dumont <dod@debian.org>  Thu, 05 Feb 2026 18:24:52 +0100
+
+libconfig-model-tester-perl (4.008-1) unstable; urgency=medium
+
+  * new upstream version
+  * control: declare compliance with policy 4.7.3
+  * updated debian files to build with dzil
+  * update patch for 4.008
+  * add patch to fix lintian warning
+  * add patch to remove multistrap from doc
+  * add debian/tests/pkg-perl/use-name file
+
+ -- Dominique Dumont <dod@debian.org>  Wed, 04 Feb 2026 17:00:40 +0100
+
+libconfig-model-tester-perl (4.007-2) unstable; urgency=medium
+
+  [ Debian Janitor ]
+  * Remove obsolete fields Contact, Name from debian/upstream/metadata (already
+    present in machine-readable debian/copyright).
+
+ -- Jelmer Vernooĳ <jelmer@debian.org>  Sat, 10 Dec 2022 13:22:38 +0000
+
 libconfig-model-tester-perl (4.007-1) unstable; urgency=medium
 
   * New upstream version 4.007

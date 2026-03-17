@@ -1,0 +1,4 @@
+---
+debian/README.source.org:
+  comment: The file mentioning debian/copyright file trips up license check
+  skip: true
