@@ -1,13 +1,4 @@
-#
-# This file is part of Config-Model-Tester
-#
-# This software is Copyright (c) 2013-2020 by Dominique Dumont.
-#
-# This is free software, licensed under:
-#
-#   The GNU Lesser General Public License, Version 2.1, February 1999
-#
-package Config::Model::Tester 4.007;
+package Config::Model::Tester;
 # ABSTRACT: Test framework for Config::Model
 
 use warnings;
@@ -193,20 +184,32 @@ sub run_update {
 
     local $Config::Model::Value::nowarning = $args{no_warnings} || $t->{no_warnings} || 0;
 
+    my @note_data ;
+    foreach my $key (keys %args) {
+        my $v = $args{$key};
+        if (ref $v eq "ARRAY") {
+            push @note_data, "$key: @$v" if @$v > 0;
+        }
+        else {
+            push @note_data, "$key: $v";
+        }
+    }
+    my $note = join(", ", @note_data);
+
     my $res ;
     if ( my $info = $t->{log4perl_update_warnings}) {
         my $tw = Test::Log::Log4perl->expect( $info );
-        note("updating config with log4perl warning check and args: ". join(' ',%args));
+        note("updating config with log4perl warning check and args: $note");
         $res = $inst->update( from_dir => $dir, %args ) ;
     }
     elsif (my $uw = delete $args{update_warnings}) {
         note("update_warnings param is DEPRECATED. Please use log4perl_update_warnings");
-        note("updating config with warning check and args: ". join(' ',%args));
+        note("updating config with warning check and args: $note");
         warnings_like { $res = $inst->update( from_dir => $dir, %args ); } $uw,
             "Updated configuration with warning check ";
     }
     else {
-        note("updating config with no warning check and args: ". join(' ',%args));
+        note("updating config with no warning check and args: $note");
         $res = $inst->update( from_dir => $dir, %args ) ;
     }
 
@@ -748,20 +751,6 @@ sub run_tests {
 }
 1;
 
-__END__
-
-=pod
-
-=encoding UTF-8
-
-=head1 NAME
-
-Config::Model::Tester - Test framework for Config::Model
-
-=head1 VERSION
-
-version 4.007
-
 =head1 SYNOPSIS
 
 In your test file (typically C<t/model_test.t>):
@@ -862,6 +851,7 @@ under C<dpkg-examples> is used.
              |   \-- format
              \-- watch
 
+
 See L</Examples> for a link to the (many) Dpkg model tests
 
 =head2 More complex file layout
@@ -882,6 +872,7 @@ Let's consider this example of 2 tests cases for ssh:
      \-- basic
          |-- system_ssh_config
          \-- user_ssh_config
+
 
 Unfortunately, C<user_ssh_config> is a user file, so you need to specify
 where is located the home directory of the test with another global parameter:
@@ -1312,6 +1303,7 @@ Verify annotation extracted from the configuration file comments:
             'source Maintainer' => "what a fine\nteam this one is",
         },
 
+
 =item *
 
 Write back the config data in C<< wr_root/model_tests/<subtest name>/ >>.
@@ -1368,6 +1360,7 @@ specify a subref to alter the file list:
 Note that actual and expected file lists are sorted before check,
 adding a file can be done with C<push>.
 
+
 =item *
 
 Copy all config data from C<< wr_root/model_tests/<subtest name>/ >>
@@ -1403,6 +1396,7 @@ Compare data read from original data.
 
 Run specific content check on the B<written> config file to verify that
 configuration data was written and retrieved correctly:
+
 
     wr_check => {
         'fs:/proc fs_spec' =>          "proc" ,
@@ -1497,101 +1491,15 @@ is a more complex example showing how to test a backend. The test is done creati
 
 In alphabetical order:
 
-=over 4
-
-=item *
-
-Cyrille Bollu
-
-=back
+=for :list
+* Cyrille Bollu
 
 Many thanks for your help.
 
 =head1 SEE ALSO
 
-=over 4
+=for :list
+* L<Config::Model>
+* L<Test::More>
 
-=item *
 
-L<Config::Model>
-
-=item *
-
-L<Test::More>
-
-=back
-
-=head1 AUTHOR
-
-Dominique Dumont
-
-=head1 COPYRIGHT AND LICENSE
-
-This software is Copyright (c) 2013-2020 by Dominique Dumont.
-
-This is free software, licensed under:
-
-  The GNU Lesser General Public License, Version 2.1, February 1999
-
-=for :stopwords cpan testmatrix url bugtracker rt cpants kwalitee diff irc mailto metadata placeholders metacpan
-
-=head1 SUPPORT
-
-=head2 Websites
-
-The following websites have more information about this module, and may be of help to you. As always,
-in addition to those websites please use your favorite search engine to discover more resources.
-
-=over 4
-
-=item *
-
-CPANTS
-
-The CPANTS is a website that analyzes the Kwalitee ( code metrics ) of a distribution.
-
-L<http://cpants.cpanauthors.org/dist/Config-Model-Tester>
-
-=item *
-
-CPAN Testers
-
-The CPAN Testers is a network of smoke testers who run automated tests on uploaded CPAN distributions.
-
-L<http://www.cpantesters.org/distro/C/Config-Model-Tester>
-
-=item *
-
-CPAN Testers Matrix
-
-The CPAN Testers Matrix is a website that provides a visual overview of the test results for a distribution on various Perls/platforms.
-
-L<http://matrix.cpantesters.org/?dist=Config-Model-Tester>
-
-=item *
-
-CPAN Testers Dependencies
-
-The CPAN Testers Dependencies is a website that shows a chart of the test results of all dependencies for a distribution.
-
-L<http://deps.cpantesters.org/?module=Config::Model::Tester>
-
-=back
-
-=head2 Bugs / Feature Requests
-
-Please report any bugs or feature requests by email to C<ddumont at cpan.org>, or through
-the web interface at L<https://github.com/dod38fr/config-model-tester/issues>. You will be automatically notified of any
-progress on the request by the system.
-
-=head2 Source Code
-
-The code is open to the world, and available for you to hack on. Please feel free to browse it and play
-with it, or whatever. If you want to contribute patches, please send me a diff or prod me to pull
-from your repository :)
-
-L<http://github.com/dod38fr/config-model-tester.git>
-
-  git clone git://github.com/dod38fr/config-model-tester.git
-
-=cut

@@ -1,0 +1,15 @@
+Description: Remove perl critic test
+ Perl critic test is fine for upstream, but not useful for Debian
+Forwarded: not-needed
+Author: dod
+--- a/dist.ini
++++ b/dist.ini
+@@ -37,8 +37,6 @@
+ [PkgVersion]
+ use_package = 1
+ 
+-[Test::Perl::Critic]
+-
+ [PodWeaver]
+ 
+ [Prepender]
